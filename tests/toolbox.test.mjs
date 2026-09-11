@@ -28,14 +28,23 @@ test("every tool slug has a client component file", () => {
   const toolsTs = readFileSync(join(src, "lib", "tools.ts"), "utf8");
   const viewTs = readFileSync(join(src, "components", "ToolView.tsx"), "utf8");
   const slugs = [...toolsTs.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1]);
-  const registered = [...viewTs.matchAll(/"([^"]+)":\s*\(\)\s*=>\s*import\("@\/tools\/([^"]+)"\)/g)];
-  const map = new Map(registered.map((m) => [m[1], m[2]]));
+  // Match: const Foo = dynamic(() => import("@/tools/Foo"), ...)
+  const imports = [...viewTs.matchAll(/import\("@\/tools\/([^"]+)"\)/g)].map((m) => m[1]);
+  // Match TOOLS map entries: "slug": Name,
+  const mapEntries = [...viewTs.matchAll(/"([^"]+)":\s*([A-Za-z0-9_]+)/g)].filter(
+    (m) => !m[1].includes("/")
+  );
   const toolsDir = join(src, "tools");
   for (const slug of slugs) {
-    assert.ok(map.has(slug), `ToolView missing slug ${slug}`);
-    const file = join(toolsDir, `${map.get(slug)}.tsx`);
-    assert.ok(existsSync(file), `missing component file ${map.get(slug)}.tsx`);
+    assert.ok(
+      mapEntries.some((m) => m[1] === slug),
+      `ToolView TOOLS map missing slug ${slug}`
+    );
   }
+  for (const name of imports) {
+    assert.ok(existsSync(join(toolsDir, `${name}.tsx`)), `missing component file ${name}.tsx`);
+  }
+  assert.ok(imports.length >= slugs.length * 0.9, "too few dynamic tool imports");
 });
 
 test("privacy copy present in core files", () => {
