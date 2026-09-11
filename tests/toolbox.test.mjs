@@ -44,7 +44,9 @@ test("privacy copy present in core files", () => {
   const privacy = readFileSync(join(src, "app", "privacy", "page.tsx"), "utf8");
   assert.ok(privacy.includes("上传") && privacy.includes("不会"));
   const ad = readFileSync(join(src, "components", "AdSlot.tsx"), "utf8");
-  assert.ok(ad.includes("Top") && ad.includes("Sidebar") && ad.includes("Bottom") && ad.includes("Content"));
+  assert.ok(ad.includes('"top"') && ad.includes('"sidebar"') && ad.includes('"bottom"'));
+  assert.ok(ad.includes("adsense") && ad.includes("microsoft"));
+  assert.ok(/never cover|Never cover|overlay/i.test(ad));
 });
 
 test("no user-file upload patterns in source", () => {
