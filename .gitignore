@@ -15,6 +15,10 @@
 /.next/
 /out/
 
+# cloudflare packaging
+/cloudflare-deploy/
+*.zip
+
 # production
 /build
 
