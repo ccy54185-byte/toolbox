@@ -62,9 +62,7 @@ const icons: Record<string, React.ReactNode> = {
       <path d="M12 7v5l3 2" strokeLinecap="round" />
     </>
   ),
-  text: (
-    <path d="M4 7h16M4 12h10M4 17h14" strokeLinecap="round" />
-  ),
+  text: <path d="M4 7h16M4 12h10M4 17h14" strokeLinecap="round" />,
   markdown: (
     <path d="M4 6h16v12H4zM7 15V9l2.5 3L12 9v6M15 12h3m0 0l-1.5-1.5M18 12l-1.5 1.5" strokeLinecap="round" strokeLinejoin="round" />
   ),
@@ -91,51 +89,44 @@ const icons: Record<string, React.ReactNode> = {
   note: (
     <path d="M6 3h9l5 5v13H6zM15 3v5h5M9 13h6M9 17h4" strokeLinecap="round" strokeLinejoin="round" />
   ),
-  volume: (
-    <path d="M4 10v4h3l4 4V6L7 10H4zM16 9a4 4 0 010 6M18.5 7a7 7 0 010 10" strokeLinecap="round" strokeLinejoin="round" />
+  audio: (
+    <path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2" strokeLinecap="round" />
+  ),
+  video: (
+    <path d="M3 7h12v10H3zM15 10l6-3v10l-6-3z" strokeLinejoin="round" />
   ),
   wave: (
-    <path d="M3 12h2l2-6 3 12 3-9 2 5 2-3h4" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0" strokeLinecap="round" />
   ),
-  audio: (
-    <path d="M9 18V6l10-2v12M9 18a3 3 0 11-6 0 3 3 0 016 0zM19 16a3 3 0 11-6 0 3 3 0 016 0z" strokeLinejoin="round" />
+  volume: (
+    <path d="M4 10v4h3l4 3V7L7 10H4zM16 9a4 4 0 010 6M18.5 7a7 7 0 010 10" strokeLinecap="round" strokeLinejoin="round" />
   ),
-  image: (
-    <>
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <circle cx="9" cy="10" r="1.5" />
-      <path d="M21 16l-5-5-4 4-2-2-5 5" strokeLinecap="round" strokeLinejoin="round" />
-    </>
+  pdf: (
+    <path d="M7 3h7l5 5v13H7zM14 3v5h5M9 14h6M9 17h4" strokeLinecap="round" strokeLinejoin="round" />
+  ),
+  spark: (
+    <path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z" strokeLinejoin="round" />
+  ),
+  wrench: (
+    <path d="M14.7 6.3a4 4 0 01-5 5L5 16v3h3l4.7-4.7a4 4 0 015-5l-2.5 2.5" strokeLinecap="round" strokeLinejoin="round" />
   ),
   code: (
     <path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 5l-2 14" strokeLinecap="round" strokeLinejoin="round" />
   ),
-  spark: (
-    <path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3zM18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8L18 15z" strokeLinejoin="round" />
-  ),
-  wrench: (
-    <path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4L14.5 12l-2.5-2.5 2.7-3.2z" strokeLinejoin="round" />
-  ),
-  pdf: (
-    <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 14h4M10 17h4" strokeLinecap="round" strokeLinejoin="round" />
-  ),
-  video: (
-    <>
-      <rect x="3" y="6" width="13" height="12" rx="2" />
-      <path d="M16 10l5-3v10l-5-3" strokeLinejoin="round" />
-    </>
+  image: (
+    <path d="M4 5h16v14H4zM4 15l4-4 3 3 4-5 5 6" strokeLinecap="round" strokeLinejoin="round" />
   ),
 };
 
-export function ToolIcon({ name, size = 20 }: { name: string; size?: number }) {
+function ToolIcon({ name }: { name: string }) {
   return (
     <svg
-      width={size}
-      height={size}
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.7"
+      strokeWidth="1.8"
       aria-hidden
     >
       {icons[name] || icons.wrench}
@@ -147,26 +138,68 @@ export default function ToolCard({ tool }: { tool: ToolMeta }) {
   return (
     <Link
       href={`/tools/${tool.slug}/`}
-      className="card card-hover block p-4"
-      style={{ minHeight: 132 }}
+      className="card card-hover"
+      style={{
+        display: "block",
+        padding: "1rem 1.05rem",
+        minHeight: 128,
+        color: "inherit",
+      }}
     >
-      <div className="flex items-start gap-3">
+      <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
         <span
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-          style={{ background: "var(--accent-soft)", color: "var(--accent)" }}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--accent-soft)",
+            color: "var(--accent)",
+            border: "1px solid rgba(0,229,255,.2)",
+          }}
         >
           <ToolIcon name={tool.icon} />
         </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="truncate font-semibold">{tool.name}</h3>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: "1rem",
+                fontWeight: 650,
+                color: "#e8eef7",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                maxWidth: "100%",
+              }}
+            >
+              {tool.name}
+            </h3>
             {tool.status === "beta" && (
-              <span className="badge" style={{ color: "var(--warning)", borderColor: "rgba(251,191,36,.35)" }}>
+              <span
+                className="badge"
+                style={{ color: "var(--warning)", borderColor: "rgba(251,191,36,.35)" }}
+              >
                 Beta
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm leading-snug" style={{ color: "var(--text-muted)" }}>
+          <p
+            style={{
+              margin: "6px 0 0",
+              fontSize: ".85rem",
+              lineHeight: 1.45,
+              color: "var(--text-muted)",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
             {tool.description}
           </p>
         </div>

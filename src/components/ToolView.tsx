@@ -1,63 +1,119 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
 
-const loaders: Record<string, () => Promise<{ default: React.ComponentType }>> = {
-  "image-compressor": () => import("@/tools/ImageCompressor"),
-  "image-converter": () => import("@/tools/ImageConverter"),
-  "image-resizer": () => import("@/tools/ImageResizer"),
-  "image-crop": () => import("@/tools/ImageCrop"),
-  "image-rotate": () => import("@/tools/ImageRotate"),
-  "image-join": () => import("@/tools/ImageJoin"),
-  "image-split": () => import("@/tools/ImageSplit"),
-  "image-watermark": () => import("@/tools/ImageWatermark"),
-  "image-exif": () => import("@/tools/ImageExif"),
-  "image-colors": () => import("@/tools/ImageColors"),
-  "image-base64": () => import("@/tools/ImageBase64"),
-  "image-info": () => import("@/tools/ImageInfo"),
-  "json-formatter": () => import("@/tools/JsonFormatter"),
-  "json-escape": () => import("@/tools/JsonEscape"),
-  "base64": () => import("@/tools/Base64Tool"),
-  "url-encode": () => import("@/tools/UrlEncode"),
-  "uuid": () => import("@/tools/UuidTool"),
-  "hash": () => import("@/tools/HashTool"),
-  "jwt": () => import("@/tools/JwtTool"),
-  "timestamp": () => import("@/tools/TimestampTool"),
-  "text-stats": () => import("@/tools/TextStats"),
-  "markdown": () => import("@/tools/MarkdownPreview"),
-  "diff": () => import("@/tools/TextDiff"),
-  "password": () => import("@/tools/PasswordGen"),
-  "random-number": () => import("@/tools/RandomNumber"),
-  "random-color": () => import("@/tools/RandomColor"),
-  "lorem": () => import("@/tools/LoremGen"),
-  "qrcode": () => import("@/tools/QrCodeTool"),
-  "note": () => import("@/tools/NotePad"),
-  "audio-info": () => import("@/tools/AudioInfo"),
-  "audio-trim": () => import("@/tools/AudioTrim"),
-  "audio-volume": () => import("@/tools/AudioVolume"),
-  "audio-fade": () => import("@/tools/AudioFade"),
-  "audio-merge": () => import("@/tools/AudioMerge"),
-  "audio-convert": () => import("@/tools/AudioConvert"),
-  "audio-compressor": () => import("@/tools/AudioCompressor"),
-  "audio-silence": () => import("@/tools/AudioSilence"),
-  "video-info": () => import("@/tools/VideoInfo"),
-  "video-trim": () => import("@/tools/VideoTrim"),
-  "video-extract-audio": () => import("@/tools/VideoExtractAudio"),
-  "video-compress": () => import("@/tools/VideoCompress"),
-  "images-to-pdf": () => import("@/tools/ImagesToPdf"),
-  "pdf-info": () => import("@/tools/PdfInfo"),
+const loading = () => (
+  <div
+    style={{
+      color: "var(--text-dim)",
+      padding: "1.25rem 0",
+      fontSize: "0.9rem",
+    }}
+  >
+    正在加载工具…
+  </div>
+);
+
+// Module-level dynamic wrappers — do NOT call dynamic() during render.
+const ImageCompressor = dynamic(() => import("@/tools/ImageCompressor"), { ssr: false, loading });
+const ImageConverter = dynamic(() => import("@/tools/ImageConverter"), { ssr: false, loading });
+const ImageResizer = dynamic(() => import("@/tools/ImageResizer"), { ssr: false, loading });
+const ImageCrop = dynamic(() => import("@/tools/ImageCrop"), { ssr: false, loading });
+const ImageRotate = dynamic(() => import("@/tools/ImageRotate"), { ssr: false, loading });
+const ImageJoin = dynamic(() => import("@/tools/ImageJoin"), { ssr: false, loading });
+const ImageSplit = dynamic(() => import("@/tools/ImageSplit"), { ssr: false, loading });
+const ImageWatermark = dynamic(() => import("@/tools/ImageWatermark"), { ssr: false, loading });
+const ImageExif = dynamic(() => import("@/tools/ImageExif"), { ssr: false, loading });
+const ImageColors = dynamic(() => import("@/tools/ImageColors"), { ssr: false, loading });
+const ImageBase64 = dynamic(() => import("@/tools/ImageBase64"), { ssr: false, loading });
+const ImageInfo = dynamic(() => import("@/tools/ImageInfo"), { ssr: false, loading });
+const JsonFormatter = dynamic(() => import("@/tools/JsonFormatter"), { ssr: false, loading });
+const JsonEscape = dynamic(() => import("@/tools/JsonEscape"), { ssr: false, loading });
+const Base64Tool = dynamic(() => import("@/tools/Base64Tool"), { ssr: false, loading });
+const UrlEncode = dynamic(() => import("@/tools/UrlEncode"), { ssr: false, loading });
+const UuidTool = dynamic(() => import("@/tools/UuidTool"), { ssr: false, loading });
+const HashTool = dynamic(() => import("@/tools/HashTool"), { ssr: false, loading });
+const JwtTool = dynamic(() => import("@/tools/JwtTool"), { ssr: false, loading });
+const TimestampTool = dynamic(() => import("@/tools/TimestampTool"), { ssr: false, loading });
+const TextStats = dynamic(() => import("@/tools/TextStats"), { ssr: false, loading });
+const MarkdownPreview = dynamic(() => import("@/tools/MarkdownPreview"), { ssr: false, loading });
+const TextDiff = dynamic(() => import("@/tools/TextDiff"), { ssr: false, loading });
+const PasswordGen = dynamic(() => import("@/tools/PasswordGen"), { ssr: false, loading });
+const RandomNumber = dynamic(() => import("@/tools/RandomNumber"), { ssr: false, loading });
+const RandomColor = dynamic(() => import("@/tools/RandomColor"), { ssr: false, loading });
+const LoremGen = dynamic(() => import("@/tools/LoremGen"), { ssr: false, loading });
+const QrCodeTool = dynamic(() => import("@/tools/QrCodeTool"), { ssr: false, loading });
+const NotePad = dynamic(() => import("@/tools/NotePad"), { ssr: false, loading });
+const AudioInfo = dynamic(() => import("@/tools/AudioInfo"), { ssr: false, loading });
+const AudioTrim = dynamic(() => import("@/tools/AudioTrim"), { ssr: false, loading });
+const AudioVolume = dynamic(() => import("@/tools/AudioVolume"), { ssr: false, loading });
+const AudioFade = dynamic(() => import("@/tools/AudioFade"), { ssr: false, loading });
+const AudioMerge = dynamic(() => import("@/tools/AudioMerge"), { ssr: false, loading });
+const AudioConvert = dynamic(() => import("@/tools/AudioConvert"), { ssr: false, loading });
+const AudioCompressor = dynamic(() => import("@/tools/AudioCompressor"), { ssr: false, loading });
+const AudioSilence = dynamic(() => import("@/tools/AudioSilence"), { ssr: false, loading });
+const VideoInfo = dynamic(() => import("@/tools/VideoInfo"), { ssr: false, loading });
+const VideoTrim = dynamic(() => import("@/tools/VideoTrim"), { ssr: false, loading });
+const VideoExtractAudio = dynamic(() => import("@/tools/VideoExtractAudio"), { ssr: false, loading });
+const VideoCompress = dynamic(() => import("@/tools/VideoCompress"), { ssr: false, loading });
+const ImagesToPdf = dynamic(() => import("@/tools/ImagesToPdf"), { ssr: false, loading });
+const PdfInfo = dynamic(() => import("@/tools/PdfInfo"), { ssr: false, loading });
+
+const TOOLS: Record<string, ComponentType> = {
+  "image-compressor": ImageCompressor,
+  "image-converter": ImageConverter,
+  "image-resizer": ImageResizer,
+  "image-crop": ImageCrop,
+  "image-rotate": ImageRotate,
+  "image-join": ImageJoin,
+  "image-split": ImageSplit,
+  "image-watermark": ImageWatermark,
+  "image-exif": ImageExif,
+  "image-colors": ImageColors,
+  "image-base64": ImageBase64,
+  "image-info": ImageInfo,
+  "json-formatter": JsonFormatter,
+  "json-escape": JsonEscape,
+  "base64": Base64Tool,
+  "url-encode": UrlEncode,
+  "uuid": UuidTool,
+  "hash": HashTool,
+  "jwt": JwtTool,
+  "timestamp": TimestampTool,
+  "text-stats": TextStats,
+  "markdown": MarkdownPreview,
+  "diff": TextDiff,
+  "password": PasswordGen,
+  "random-number": RandomNumber,
+  "random-color": RandomColor,
+  "lorem": LoremGen,
+  "qrcode": QrCodeTool,
+  "note": NotePad,
+  "audio-info": AudioInfo,
+  "audio-trim": AudioTrim,
+  "audio-volume": AudioVolume,
+  "audio-fade": AudioFade,
+  "audio-merge": AudioMerge,
+  "audio-convert": AudioConvert,
+  "audio-compressor": AudioCompressor,
+  "audio-silence": AudioSilence,
+  "video-info": VideoInfo,
+  "video-trim": VideoTrim,
+  "video-extract-audio": VideoExtractAudio,
+  "video-compress": VideoCompress,
+  "images-to-pdf": ImagesToPdf,
+  "pdf-info": PdfInfo,
 };
 
 export default function ToolView({ slug }: { slug: string }) {
-  const loader = loaders[slug];
-  if (!loader) {
-    return <div style={{ color: "var(--text-dim)" }}>工具组件加载失败。</div>;
+  const Comp = TOOLS[slug];
+  if (!Comp) {
+    return (
+      <div style={{ color: "var(--text-muted)", padding: "0.5rem 0" }}>
+        未找到该工具组件。
+      </div>
+    );
   }
-  const Comp = dynamic(loader, {
-    ssr: false,
-    loading: () => (
-      <div style={{ color: "var(--text-dim)", padding: "1rem 0" }}>正在加载工具…</div>
-    ),
-  });
   return <Comp />;
 }
