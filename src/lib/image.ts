@@ -1,13 +1,21 @@
-﻿/** All processing is local. Never upload user files. */
+/** All processing is local. Never upload user files. */
 
 export type OutputFormat = "image/jpeg" | "image/png" | "image/webp";
 
 export async function loadImageFromFile(file: File): Promise<HTMLImageElement> {
+  if (!file || file.size === 0) {
+    throw new Error("文件为空或无效");
+  }
   const url = URL.createObjectURL(file);
   try {
-    return await loadImageFromUrl(url);
+    const img = await loadImageFromUrl(url);
+    if (typeof img.decode === "function") {
+      await img.decode().catch(() => undefined);
+    }
+    return img;
   } finally {
-    URL.revokeObjectURL(url);
+    // Immediate revoke can break canvas.drawImage in some browsers after onload
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
   }
 }
 

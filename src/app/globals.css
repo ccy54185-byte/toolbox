@@ -134,10 +134,43 @@ h1, h2, h3, h4 { color: #e8eef7; font-weight: 700; line-height: 1.25; }
 .mono { font-family: var(--font-mono); }
 
 .ad-slot {
-  display: flex; align-items: center; justify-content: center; min-height: 90px;
-  border: 1px dashed var(--border); border-radius: var(--radius-sm);
-  color: var(--text-dim); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase;
-  background: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(255,255,255,.015) 8px, rgba(255,255,255,.015) 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: .75rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.015) 8px,
+    rgba(255, 255, 255, 0.015) 16px
+  );
+  /* Ads never overlay tool UI */
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ad-frame {
+  /* document flow only — no fixed/absolute overlays */
+  display: block;
+  width: 100%;
+  isolation: isolate;
+}
+
+/* When a real ad is injected later, keep it in-flow */
+.ad-frame ins.adsbygoogle,
+.ad-frame [data-ad-network="microsoft"] {
+  display: block !important;
+  position: relative !important;
+  z-index: 0 !important;
+  max-width: 100%;
 }
 
 .range { width: 100%; accent-color: var(--accent); }

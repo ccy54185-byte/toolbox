@@ -46,9 +46,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
+      {/*
+        广告接入预留（Google AdSense）：
+        审核通过后取消注释并替换 ca-pub-XXXXXXXX
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX" crossOrigin="anonymous"></script>
+
+        Microsoft Advertising 预留：
+        将 UET 标签脚本放在这里，或通过 AdSlot data-ad-network="microsoft" 容器注入。
+        广告容器均在文档流内，不会遮挡工具按钮。
+      */}
       <body>
         <SiteHeader />
-        <main style={{ minHeight: "60vh" }}>{children}</main>
+        <main style={{ minHeight: "60vh", position: "relative", zIndex: 0 }}>{children}</main>
         <SiteFooter />
       </body>
     </html>

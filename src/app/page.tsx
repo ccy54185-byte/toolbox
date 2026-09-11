@@ -28,7 +28,7 @@ export default function HomePage() {
         <SearchBox tools={TOOLS} />
       </section>
 
-      <AdSlot variant="top" className="mb-6" />
+      <AdSlot variant="top" network="adsense" />
 
       <section style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: "1.1rem", margin: "0 0 12px", color: "var(--text-muted)" }}>工具分类</h2>
@@ -65,6 +65,9 @@ export default function HomePage() {
           </ul>
         </div>
       </section>
+
+      <AdSlot variant="bottom" network="microsoft" />
+      <AdSlot variant="content" network="adsense" />
     </div>
   );
 }

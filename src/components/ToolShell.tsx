@@ -32,17 +32,19 @@ export default function ToolShell({
         <p style={{ margin: 0, color: "var(--text-muted)", maxWidth: 720 }}>{tool.description}</p>
       </header>
 
-      <AdSlot variant="top" className="mb-4" />
-
       {(tool.privacyNote || true) && (
         <div style={{ marginBottom: 16 }}>
           <PrivacyBanner note={tool.privacyNote} />
         </div>
       )}
 
-      <div className="card" style={{ padding: "1.1rem", marginBottom: 20 }}>{children}</div>
+      {/* Tool work area — ads must never overlay this */}
+      <div className="card" style={{ padding: "1.1rem", marginBottom: 16, position: "relative", zIndex: 1 }}>
+        {children}
+      </div>
 
-      <AdSlot variant="bottom" className="mb-6" />
+      {/* In-flow ads only — below tool UI, never overlay buttons */}
+      <AdSlot variant="content" network="adsense" />
 
       <div className="prose-tool" style={{ maxWidth: 760 }}>
         <h2>使用方法</h2>
@@ -75,6 +77,8 @@ export default function ToolShell({
           <Link href="/privacy/" style={{ color: "var(--accent)" }}>隐私说明</Link>。
         </p>
       </div>
+
+      <AdSlot variant="bottom" network="microsoft" />
     </div>
   );
 }
