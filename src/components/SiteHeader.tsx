@@ -1,52 +1,37 @@
 import Link from "next/link";
 import { SITE } from "@/lib/categories";
 
+const NAV = [
+  { href: "/tools/image/", label: "图片" },
+  { href: "/tools/developer/", label: "开发" },
+  { href: "/tools/generator/", label: "生成" },
+  { href: "/tools/audio/", label: "音频" },
+];
+
 export default function SiteHeader() {
   return (
-    <header
-      style={{
-        borderBottom: "1px solid var(--border)",
-        background: "rgba(10,14,20,.85)",
-        backdropFilter: "blur(10px)",
-        position: "sticky",
-        top: 0,
-        zIndex: 40,
-      }}
-    >
-      <div
-        className="container-app"
-        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 60, gap: 16 }}
-      >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 700 }}>
-          <span
-            aria-hidden
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "var(--accent-soft)",
-              color: "var(--accent)",
-              border: "1px solid rgba(0,229,255,.35)",
-              fontSize: 14,
-              fontWeight: 800,
-            }}
-          >
-            T
+    <header className="site-header">
+      <div className="container-app site-header-inner">
+        <Link href="/" className="site-brand" aria-label={`${SITE.name} 首页`}>
+          <span className="site-logo" aria-hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+              <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M12 3v3.2M12 17.8V21M3 12h3.2M17.8 12H21" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
           </span>
-          <span>{SITE.name}</span>
-          <span className="badge badge-accent" style={{ marginLeft: 4 }}>
-            本地处理
-          </span>
+          <span className="site-brand-name">{SITE.name}</span>
         </Link>
-        <nav style={{ display: "flex", gap: 8, flexWrap: "wrap" }} aria-label="主导航">
-          <Link className="btn btn-ghost" href="/tools/image/" style={{ minHeight: 36, padding: "0 .7rem" }}>图片</Link>
-          <Link className="btn btn-ghost" href="/tools/developer/" style={{ minHeight: 36, padding: "0 .7rem" }}>开发者</Link>
-          <Link className="btn btn-ghost" href="/tools/generator/" style={{ minHeight: 36, padding: "0 .7rem" }}>生成器</Link>
-          <Link className="btn btn-ghost" href="/privacy/" style={{ minHeight: 36, padding: "0 .7rem" }}>隐私</Link>
+        <nav className="site-nav" aria-label="主导航">
+          {NAV.map((item) => (
+            <Link key={item.href} href={item.href} className="site-nav-link">
+              {item.label}
+            </Link>
+          ))}
         </nav>
+        <Link href="/tools/image-compressor/" className="btn btn-primary site-header-cta">
+          开始使用
+        </Link>
       </div>
     </header>
   );
