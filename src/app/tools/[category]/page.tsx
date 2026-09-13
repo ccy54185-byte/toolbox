@@ -37,21 +37,23 @@ export default async function CategoryPage({
   const tools = getToolsByCategory(category);
 
   return (
-    <div className="container-app" style={{ padding: "2rem 0 3rem" }}>
-      <nav aria-label="面包屑" style={{ fontSize: ".85rem", color: "var(--text-dim)", marginBottom: 12 }}>
+    <div className="tool-page">
+      <nav aria-label="面包屑" className="tool-crumb">
         <Link href="/">首页</Link>
         <span aria-hidden> / </span>
-        <span style={{ color: "var(--text-muted)" }}>{cat.name}</span>
+        <span className="tool-crumb-current">{cat.name}</span>
       </nav>
-      <h1 style={{ margin: "0 0 8px" }}>{cat.name}</h1>
-      <p style={{ color: "var(--text-muted)", margin: "0 0 24px" }}>{cat.description}</p>
-      <div className="grid-tools">
+      <header className="tool-header">
+        <h1 className="tool-title">{cat.name}</h1>
+        <p className="tool-desc">{cat.description}</p>
+      </header>
+      <div className="apple-tool-grid" style={{ marginTop: "0.5rem" }}>
         {tools.map((t) => (
           <ToolCard key={t.slug} tool={t} />
         ))}
       </div>
       {tools.length === 0 && (
-        <div className="card" style={{ padding: "2rem", color: "var(--text-dim)" }}>
+        <div className="card" style={{ padding: "2rem", color: "var(--text-tertiary)" }}>
           该分类工具即将上线。
         </div>
       )}
