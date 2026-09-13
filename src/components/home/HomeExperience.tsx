@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagicCircle from "@/components/hero/MagicCircle";
 import ParticleField from "@/components/hero/ParticleField";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-import { CATEGORIES, SITE } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
 import { getReadyTools, TOOLS } from "@/lib/tools";
 import SearchBox from "@/components/SearchBox";
 import AdSlot from "@/components/AdSlot";
@@ -71,6 +71,16 @@ export default function HomeExperience() {
       setIntensity(Math.min(1, Math.hypot(dx, dy)));
     };
     window.addEventListener("pointermove", onMove, { passive: true });
+
+    // Card spotlight follows pointer (CSS vars, no re-render)
+    const cards = Array.from(root.querySelectorAll<HTMLElement>(".home-card"));
+    const onCardMove = (e: PointerEvent) => {
+      const el = e.currentTarget as HTMLElement;
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+      el.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    };
+    cards.forEach((c) => c.addEventListener("pointermove", onCardMove));
 
     const ctx = gsap.context(() => {
       // Entrance (does not feed into scrub start values)
@@ -193,6 +203,7 @@ export default function HomeExperience() {
 
     return () => {
       window.removeEventListener("pointermove", onMove);
+      cards.forEach((c) => c.removeEventListener("pointermove", onCardMove));
       ctx.revert();
     };
   }, []);
@@ -215,28 +226,21 @@ export default function HomeExperience() {
         </div>
 
         <div className="home-hero-copy container-app" data-hero-copy>
-          <div className="home-eyebrow">LOCAL · PRIVATE · FREE</div>
+          <div className="home-eyebrow">LOCAL PROCESSING</div>
           <h1 className="home-title">
             把工具收进
             <span className="home-title-accent">一枚精密法阵</span>
           </h1>
           <p className="home-sub">
-            {SITE.name} 是隐私优先的在线工具箱。图片、音频、开发者工具全部在浏览器本地完成处理——文件不上传，打开即用。
+            隐私优先的在线工具箱。压缩、转换、生成，全部在浏览器本地完成，文件不上传。
           </p>
           <div className="home-actions">
-            <Link href="/tools/image/" className="btn btn-primary">
-              进入工具
+            <Link href="/tools/image-compressor/" className="btn btn-primary">
+              立即压缩图片
             </Link>
             <a href="#tools" className="btn btn-secondary">
-              浏览全部
+              浏览工具
             </a>
-          </div>
-          <div className="home-meta">
-            <span>{tools.length}+ 工具</span>
-            <span className="dot" />
-            <span>零上传</span>
-            <span className="dot" />
-            <span>开源可部署</span>
           </div>
         </div>
 
@@ -301,21 +305,20 @@ export default function HomeExperience() {
       {/* ===== S4 Categories ===== */}
       <section data-section="categories" className="home-section home-section-alt">
         <div className="container-app">
-          <p className="home-kicker" data-reveal>
-            CATEGORIES
-          </p>
           <h2 className="home-h2" data-reveal>
             按场景分类
           </h2>
           <div className="home-cat-grid">
-            {CATEGORIES.map((c) => (
+            {CATEGORIES.map((c, i) => (
               <Link
                 key={c.id}
                 href={`/tools/${c.id}/`}
                 className="home-cat"
                 data-card
               >
-                <span className="home-cat-code">{c.id.toUpperCase()}</span>
+                <span className="home-cat-code">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <strong>{c.name}</strong>
                 <span>{c.description}</span>
               </Link>
@@ -327,11 +330,8 @@ export default function HomeExperience() {
       {/* ===== S5 Features ===== */}
       <section data-section="features" className="home-section">
         <div className="container-app">
-          <p className="home-kicker" data-reveal>
-            PRINCIPLES
-          </p>
           <h2 className="home-h2" data-reveal>
-            设计原则
+            为什么是 ToolBox
           </h2>
           <div className="home-feature-grid">
             {FEATURES.map((f) => (
