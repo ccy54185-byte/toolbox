@@ -22,14 +22,17 @@ export default function SearchBox({ tools }: { tools: ToolMeta[] }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <label className="label" htmlFor="tool-search">搜索工具</label>
+      <label className="label" htmlFor="tool-search">
+        搜索工具
+      </label>
       <input
         id="tool-search"
         className="input"
-        placeholder="搜索：压缩、JSON、密码、二维码…"
+        placeholder="压缩、JSON、二维码…"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         autoComplete="off"
+        style={{ borderRadius: "var(--radius-pill)", paddingLeft: "1.1rem" }}
       />
       {results.length > 0 && (
         <div
@@ -41,7 +44,7 @@ export default function SearchBox({ tools }: { tools: ToolMeta[] }) {
             marginTop: 8,
             zIndex: 20,
             overflow: "hidden",
-            boxShadow: "var(--shadow)",
+            boxShadow: "var(--shadow-soft)",
           }}
         >
           {results.map((t) => (
@@ -50,12 +53,12 @@ export default function SearchBox({ tools }: { tools: ToolMeta[] }) {
               href={`/tools/${t.slug}/`}
               style={{
                 display: "block",
-                padding: ".75rem .9rem",
-                borderBottom: "1px solid var(--border)",
+                padding: "0.85rem 1rem",
+                borderBottom: "1px solid var(--border-soft)",
               }}
             >
-              <div style={{ fontWeight: 600 }}>{t.name}</div>
-              <div style={{ fontSize: ".85rem", color: "var(--text-dim)" }}>{t.description}</div>
+              <div style={{ fontWeight: 600, letterSpacing: "-0.01em" }}>{t.name}</div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>{t.description}</div>
             </Link>
           ))}
         </div>
