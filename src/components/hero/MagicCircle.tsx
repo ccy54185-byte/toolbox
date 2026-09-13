@@ -76,8 +76,8 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
       <svg viewBox="0 0 560 560" width="100%" height="100%" fill="none">
         <defs>
           <radialGradient id={`${id}-core`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.35" />
-            <stop offset="45%" stopColor="#0ea5e9" stopOpacity="0.08" />
+            <stop offset="0%" stopColor="#2997ff" stopOpacity="0.35" />
+            <stop offset="45%" stopColor="#0077ed" stopOpacity="0.08" />
             <stop offset="100%" stopColor="#05070a" stopOpacity="0" />
           </radialGradient>
           <filter id={`${id}-soft`} x="-40%" y="-40%" width="180%" height="180%">
@@ -120,7 +120,7 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
                 cx="280"
                 cy="280"
                 r={ring.r}
-                stroke="#7dd3fc"
+                stroke="#6cb6ff"
                 strokeOpacity={ring.opacity * (0.7 + intensity * 0.5)}
                 strokeWidth={ring.stroke}
                 strokeDasharray={ring.dash}
@@ -135,11 +135,11 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
           style={{ animationDuration: "95s" }}
           transform-origin="280 280"
           opacity="0.45"
-          stroke="#e8eef7"
+          stroke="#f5f5f7"
           strokeWidth="0.7"
         >
           <polygon points={polygonPoints(280, 280, 145, 6)} />
-          <polygon points={polygonPoints(280, 280, 120, 3)} stroke="#7dd3fc" strokeOpacity="0.5" />
+          <polygon points={polygonPoints(280, 280, 120, 3)} stroke="#6cb6ff" strokeOpacity="0.5" />
         </g>
         <g
           className="mc-spin-rev"
@@ -165,7 +165,7 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
                 y1={280 + Math.sin(rad) * r1}
                 x2={280 + Math.cos(rad) * r2}
                 y2={280 + Math.sin(rad) * r2}
-                stroke="#7dd3fc"
+                stroke="#6cb6ff"
                 strokeWidth={deg % 30 === 0 ? 1.2 : 0.6}
                 strokeOpacity={0.7}
               />
@@ -185,7 +185,7 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
               key={i}
               x={r.x}
               y={r.y}
-              fill="#b6e0ff"
+              fill="#9ecbff"
               fillOpacity={0.55 + intensity * 0.3}
               fontSize="11"
               textAnchor="middle"
@@ -200,14 +200,14 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
 
         {/* inner seal */}
         <g opacity="0.8">
-          <circle cx="280" cy="280" r="18" stroke="#e8eef7" strokeWidth="1" strokeOpacity="0.5" />
+          <circle cx="280" cy="280" r="18" stroke="#f5f5f7" strokeWidth="1" strokeOpacity="0.5" />
           <circle
             cx="280"
             cy="280"
             r="8"
-            fill="#38bdf8"
+            fill="#2997ff"
             fillOpacity={0.15 + intensity * 0.25}
-            stroke="#7dd3fc"
+            stroke="#6cb6ff"
             strokeWidth="1"
           />
           <circle
@@ -215,7 +215,7 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
             cx="280"
             cy="280"
             r="28"
-            stroke="#38bdf8"
+            stroke="#2997ff"
             strokeWidth="0.8"
             strokeOpacity="0.4"
           />
@@ -233,7 +233,7 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
               cx={280 + o.r}
               cy="280"
               r={o.size}
-              fill="#7dd3fc"
+              fill="#6cb6ff"
               filter={`url(#${id}-glow)`}
               opacity="0.85"
             />
@@ -241,7 +241,7 @@ export default function MagicCircle({ size = 560, className = "", intensity = 0 
               cx={280 + o.r}
               cy="280"
               r={o.size + 4}
-              stroke="#7dd3fc"
+              stroke="#6cb6ff"
               strokeOpacity="0.25"
               strokeWidth="0.6"
             />
