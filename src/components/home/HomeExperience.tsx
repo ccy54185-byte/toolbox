@@ -37,7 +37,8 @@ const FEATURES = [
 
 export default function HomeExperience() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const circleWrapRef = useRef<HTMLDivElement>(null);
+  const circleScrollRef = useRef<HTMLDivElement>(null);
+  const circlePointerRef = useRef<HTMLDivElement>(null);
   const [intensity, setIntensity] = useState(0);
   const tools = getReadyTools();
   const featured = tools.slice(0, 8);
@@ -46,86 +47,122 @@ export default function HomeExperience() {
 
   useEffect(() => {
     const root = rootRef.current;
-    const circle = circleWrapRef.current;
-    if (!root || !circle) return;
+    const circleScroll = circleScrollRef.current;
+    const circlePointer = circlePointerRef.current;
+    if (!root || !circleScroll || !circlePointer) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.registerPlugin(ScrollTrigger);
 
-    // pointer parallax on circle
+    // Pointer parallax only on inner node — never overwrite scroll-linked props
+    const qx = gsap.quickTo(circlePointer, "x", { duration: 1.1, ease: "power3.out" });
+    const qy = gsap.quickTo(circlePointer, "y", { duration: 1.1, ease: "power3.out" });
+    const qr = gsap.quickTo(circlePointer, "rotation", { duration: 1.1, ease: "power3.out" });
+
     const onMove = (e: PointerEvent) => {
       if (reduced) return;
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2;
       const dx = (e.clientX - cx) / cx;
       const dy = (e.clientY - cy) / cy;
-      gsap.to(circle, {
-        x: dx * 18,
-        y: dy * 14,
-        rotate: dx * 2,
-        duration: 1.1,
-        ease: "power3.out",
-        overwrite: true,
-      });
+      qx(dx * 18);
+      qy(dy * 14);
+      qr(dx * 2);
       setIntensity(Math.min(1, Math.hypot(dx, dy)));
     };
     window.addEventListener("pointermove", onMove, { passive: true });
 
     const ctx = gsap.context(() => {
-      // entrance
+      // Entrance (does not feed into scrub start values)
       gsap.fromTo(
         "[data-hero-copy]",
         { y: 28, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.1, stagger: 0.12, ease: "power3.out", delay: 0.15 }
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.1,
+          stagger: 0.1,
+          ease: "power3.out",
+          delay: 0.12,
+        }
       );
       gsap.fromTo(
-        circle,
+        circleScroll,
         { scale: 0.86, opacity: 0 },
         { scale: 1, opacity: 1, duration: 1.4, ease: "power3.out" }
       );
 
       if (reduced) return;
 
-      // scroll: circle shrinks + drifts up slightly
-      gsap.to(circle, {
-        scale: 0.42,
-        y: -80,
-        opacity: 0.35,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "[data-section='hero']",
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
+      // Explicit fromTo + immediateRender:false so reverse scroll restores visible state
+      gsap.fromTo(
+        circleScroll,
+        { scale: 1, y: 0, opacity: 1 },
+        {
+          scale: 0.42,
+          y: -80,
+          opacity: 0.35,
+          ease: "none",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: "[data-section='hero']",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
 
-      gsap.to("[data-hero-copy]", {
-        opacity: 0,
-        y: -40,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "[data-section='hero']",
-          start: "center top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
+      gsap.fromTo(
+        "[data-hero-copy]",
+        { opacity: 1, y: 0 },
+        {
+          opacity: 0,
+          y: -48,
+          ease: "none",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: "[data-section='hero']",
+            start: "center top",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
 
-      // section reveals
+      // Scroll hint fades once user starts scrolling
+      gsap.fromTo(
+        "[data-scroll-hint]",
+        { opacity: 1 },
+        {
+          opacity: 0,
+          ease: "none",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: "[data-section='hero']",
+            start: "top top",
+            end: "15% top",
+            scrub: true,
+          },
+        }
+      );
+
+      // Section reveals — animate on enter (down) AND enterBack (up)
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(
           el,
-          { y: 48, opacity: 0 },
+          { y: 40, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.9,
+            duration: 0.85,
             ease: "power3.out",
+            immediateRender: false,
             scrollTrigger: {
               trigger: el,
               start: "top 88%",
-              toggleActions: "play none none reverse",
+              end: "bottom 15%",
+              toggleActions: "play none play reverse",
             },
           }
         );
@@ -134,17 +171,20 @@ export default function HomeExperience() {
       gsap.utils.toArray<HTMLElement>("[data-card]").forEach((el, i) => {
         gsap.fromTo(
           el,
-          { y: 36, opacity: 0 },
+          { y: 28, opacity: 0, scale: 0.98 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.7,
-            delay: (i % 4) * 0.06,
+            scale: 1,
+            duration: 0.65,
+            delay: (i % 4) * 0.05,
             ease: "power2.out",
+            immediateRender: false,
             scrollTrigger: {
               trigger: el,
               start: "top 92%",
-              toggleActions: "play none none reverse",
+              end: "bottom 10%",
+              toggleActions: "play none play reverse",
             },
           }
         );
@@ -168,8 +208,10 @@ export default function HomeExperience() {
         <ParticleField />
         <div className="home-hero-glow" aria-hidden />
 
-        <div ref={circleWrapRef} className="home-circle-wrap">
-          <MagicCircle size={560} intensity={intensity} />
+        <div ref={circleScrollRef} className="home-circle-wrap">
+          <div ref={circlePointerRef} className="home-circle-pointer">
+            <MagicCircle size={560} intensity={intensity} />
+          </div>
         </div>
 
         <div className="home-hero-copy container-app" data-hero-copy>
@@ -198,7 +240,7 @@ export default function HomeExperience() {
           </div>
         </div>
 
-        <div className="home-scroll-hint" aria-hidden>
+        <div className="home-scroll-hint" data-scroll-hint aria-hidden>
           <span>SCROLL</span>
           <div className="home-scroll-line" />
         </div>
