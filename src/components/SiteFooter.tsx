@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { SITE } from "@/lib/categories";
 
+const LINKS = [
+  { href: "/about/", label: "关于" },
+  { href: "/privacy/", label: "隐私" },
+  { href: "/terms/", label: "条款" },
+  { href: "/faq/", label: "FAQ" },
+  { href: "/changelog/", label: "更新" },
+  { href: "/contact/", label: "联系" },
+];
+
 export default function SiteFooter() {
+  const year = new Date().getFullYear();
   return (
     <footer className="apple-footer">
       <div className="apple-wrap">
@@ -19,11 +29,15 @@ export default function SiteFooter() {
             <Link href="/tools/image/">图片</Link>
             <Link href="/tools/developer/">开发</Link>
             <Link href="/tools/generator/">生成</Link>
-            <Link href="/privacy/">隐私</Link>
+            {LINKS.map((l) => (
+              <Link key={l.href} href={l.href}>
+                {l.label}
+              </Link>
+            ))}
           </nav>
         </div>
         <p className="apple-footer-note">
-          © {new Date().getFullYear()} {SITE.name} · 文件仅在你的设备上处理
+          © {year} {SITE.name} · 保留所有权利 · 文件仅在你的设备上处理
         </p>
       </div>
     </footer>
