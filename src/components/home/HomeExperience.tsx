@@ -8,32 +8,7 @@ import MagicCircle from "@/components/hero/MagicCircle";
 import ParticleField from "@/components/hero/ParticleField";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { CATEGORIES } from "@/lib/categories";
-import { getReadyTools, TOOLS } from "@/lib/tools";
-import SearchBox from "@/components/SearchBox";
-import AdSlot from "@/components/AdSlot";
-
-const FEATURES = [
-  {
-    title: "本地处理",
-    body: "文件默认只在浏览器内完成处理，不上传、不落库、不建账号。",
-    meta: "PRIVACY",
-  },
-  {
-    title: "即开即用",
-    body: "打开网页就能用。无需安装客户端，也没有注册墙。",
-    meta: "ACCESS",
-  },
-  {
-    title: "精密工具集",
-    body: "图片、音频、视频、PDF 与开发者工具，围绕高频真实场景编排。",
-    meta: "SUITE",
-  },
-  {
-    title: "静态可部署",
-    body: "纯前端导出，适配 Cloudflare Pages 等免费静态托管。",
-    meta: "STACK",
-  },
-];
+import { getReadyTools } from "@/lib/tools";
 
 export default function HomeExperience() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -41,7 +16,7 @@ export default function HomeExperience() {
   const circlePointerRef = useRef<HTMLDivElement>(null);
   const [intensity, setIntensity] = useState(0);
   const tools = getReadyTools();
-  const featured = tools.slice(0, 8);
+  const featured = tools.slice(0, 6);
 
   useSmoothScroll();
 
@@ -54,71 +29,54 @@ export default function HomeExperience() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.registerPlugin(ScrollTrigger);
 
-    // Pointer parallax only on inner node — never overwrite scroll-linked props
-    const qx = gsap.quickTo(circlePointer, "x", { duration: 1.1, ease: "power3.out" });
-    const qy = gsap.quickTo(circlePointer, "y", { duration: 1.1, ease: "power3.out" });
-    const qr = gsap.quickTo(circlePointer, "rotation", { duration: 1.1, ease: "power3.out" });
+    const qx = gsap.quickTo(circlePointer, "x", { duration: 1.2, ease: "power3.out" });
+    const qy = gsap.quickTo(circlePointer, "y", { duration: 1.2, ease: "power3.out" });
 
     const onMove = (e: PointerEvent) => {
       if (reduced) return;
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;
-      const dy = (e.clientY - cy) / cy;
-      qx(dx * 18);
-      qy(dy * 14);
-      qr(dx * 2);
-      setIntensity(Math.min(1, Math.hypot(dx, dy)));
+      qx(((e.clientX - cx) / cx) * 12);
+      qy(((e.clientY - cy) / cy) * 10);
+      setIntensity(Math.min(1, Math.hypot((e.clientX - cx) / cx, (e.clientY - cy) / cy)));
     };
     window.addEventListener("pointermove", onMove, { passive: true });
 
-    // Card spotlight follows pointer (CSS vars, no re-render)
-    const cards = Array.from(root.querySelectorAll<HTMLElement>(".home-card"));
-    const onCardMove = (e: PointerEvent) => {
-      const el = e.currentTarget as HTMLElement;
-      const rect = el.getBoundingClientRect();
-      el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-      el.style.setProperty("--my", `${e.clientY - rect.top}px`);
-    };
-    cards.forEach((c) => c.addEventListener("pointermove", onCardMove));
-
     const ctx = gsap.context(() => {
-      // Entrance (does not feed into scrub start values)
       gsap.fromTo(
-        "[data-hero-copy]",
-        { y: 28, opacity: 0 },
+        "[data-hero-line]",
+        { y: 36, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 1.1,
-          stagger: 0.1,
+          duration: 1.15,
+          stagger: 0.12,
           ease: "power3.out",
-          delay: 0.12,
+          delay: 0.1,
         }
       );
       gsap.fromTo(
         circleScroll,
-        { scale: 0.86, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.4, ease: "power3.out" }
+        { scale: 0.92, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.6, ease: "power3.out" }
       );
 
       if (reduced) return;
 
-      // Explicit fromTo + immediateRender:false so reverse scroll restores visible state
       gsap.fromTo(
         circleScroll,
         { scale: 1, y: 0, opacity: 1 },
         {
-          scale: 0.42,
-          y: -80,
-          opacity: 0.35,
+          scale: 0.38,
+          y: -100,
+          opacity: 0.2,
           ease: "none",
           immediateRender: false,
           scrollTrigger: {
             trigger: "[data-section='hero']",
             start: "top top",
             end: "bottom top",
-            scrub: true,
+            scrub: 0.6,
           },
         }
       );
@@ -128,36 +86,18 @@ export default function HomeExperience() {
         { opacity: 1, y: 0 },
         {
           opacity: 0,
-          y: -48,
+          y: -56,
           ease: "none",
           immediateRender: false,
           scrollTrigger: {
             trigger: "[data-section='hero']",
-            start: "center top",
+            start: "35% top",
             end: "bottom top",
-            scrub: true,
+            scrub: 0.6,
           },
         }
       );
 
-      // Scroll hint fades once user starts scrolling
-      gsap.fromTo(
-        "[data-scroll-hint]",
-        { opacity: 1 },
-        {
-          opacity: 0,
-          ease: "none",
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: "[data-section='hero']",
-            start: "top top",
-            end: "15% top",
-            scrub: true,
-          },
-        }
-      );
-
-      // Section reveals — animate on enter (down) AND enterBack (up)
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(
           el,
@@ -165,13 +105,13 @@ export default function HomeExperience() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.85,
+            duration: 1,
             ease: "power3.out",
             immediateRender: false,
             scrollTrigger: {
               trigger: el,
-              start: "top 88%",
-              end: "bottom 15%",
+              start: "top 85%",
+              end: "bottom 20%",
               toggleActions: "play none play reverse",
             },
           }
@@ -181,19 +121,18 @@ export default function HomeExperience() {
       gsap.utils.toArray<HTMLElement>("[data-card]").forEach((el, i) => {
         gsap.fromTo(
           el,
-          { y: 28, opacity: 0, scale: 0.98 },
+          { y: 32, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            scale: 1,
-            duration: 0.65,
-            delay: (i % 4) * 0.05,
-            ease: "power2.out",
+            duration: 0.8,
+            delay: (i % 3) * 0.07,
+            ease: "power3.out",
             immediateRender: false,
             scrollTrigger: {
               trigger: el,
-              start: "top 92%",
-              end: "bottom 10%",
+              start: "top 90%",
+              end: "bottom 15%",
               toggleActions: "play none play reverse",
             },
           }
@@ -203,162 +142,130 @@ export default function HomeExperience() {
 
     return () => {
       window.removeEventListener("pointermove", onMove);
-      cards.forEach((c) => c.removeEventListener("pointermove", onCardMove));
       ctx.revert();
     };
   }, []);
 
   return (
-    <div ref={rootRef} className="home-root">
-      {/* ===== S1 Hero ===== */}
-      <section
-        data-section="hero"
-        className="home-hero"
-        aria-label="首页主视觉"
-      >
-        <ParticleField />
-        <div className="home-hero-glow" aria-hidden />
-
-        <div ref={circleScrollRef} className="home-circle-wrap">
-          <div ref={circlePointerRef} className="home-circle-pointer">
-            <MagicCircle size={560} intensity={intensity} />
+    <div ref={rootRef} className="apple-page">
+      {/* 1 · Hero */}
+      <section data-section="hero" className="apple-hero">
+        <ParticleField density={0.00003} />
+        <div ref={circleScrollRef} className="apple-hero-orb">
+          <div ref={circlePointerRef} className="apple-hero-orb-inner">
+            <MagicCircle size={640} intensity={intensity} />
           </div>
         </div>
 
-        <div className="home-hero-copy container-app" data-hero-copy>
-          <div className="home-eyebrow">LOCAL PROCESSING</div>
-          <h1 className="home-title">
-            把工具收进
-            <span className="home-title-accent">一枚精密法阵</span>
-          </h1>
-          <p className="home-sub">
-            隐私优先的在线工具箱。压缩、转换、生成，全部在浏览器本地完成，文件不上传。
+        <div className="apple-hero-copy" data-hero-copy>
+          <p className="apple-hero-eyebrow" data-hero-line>
+            本地处理 · 免费 · 无需注册
           </p>
-          <div className="home-actions">
-            <Link href="/tools/image-compressor/" className="btn btn-primary">
-              立即压缩图片
+          <h1 className="apple-hero-title">
+            <span data-hero-line>工具，本该</span>
+            <span data-hero-line className="apple-hero-title-em">
+              安静地好用
+            </span>
+          </h1>
+          <p className="apple-hero-sub" data-hero-line>
+            图片、音频与开发者工具，全部在浏览器里完成。文件不离开你的设备。
+          </p>
+          <div className="apple-hero-actions" data-hero-line>
+            <Link href="/tools/image-compressor/" className="apple-btn apple-btn-fill">
+              开始压缩图片
             </Link>
-            <a href="#tools" className="btn btn-secondary">
-              浏览工具
+            <a href="#tools" className="apple-btn apple-btn-quiet">
+              浏览全部工具
             </a>
           </div>
         </div>
-
-        <div className="home-scroll-hint" data-scroll-hint aria-hidden>
-          <span>SCROLL</span>
-          <div className="home-scroll-line" />
-        </div>
       </section>
 
-      {/* ===== S2 Shrink / thesis ===== */}
-      <section data-section="thesis" className="home-section home-thesis">
-        <div className="container-app">
-          <p className="home-kicker" data-reveal>
-            不是又一个杂乱工具站
-          </p>
-          <h2 className="home-h2" data-reveal>
-            像操作仪器一样操作工具
+      {/* 2 · Thesis */}
+      <section className="apple-section apple-section-tight">
+        <div className="apple-wrap">
+          <h2 className="apple-display" data-reveal>
+            复杂留给机器，
+            <br />
+            简单留给你。
           </h2>
-          <p className="home-lead" data-reveal>
-            首页是一枚持续运转的精密法阵。往下滚动，它缓缓退场，把舞台交给真正重要的东西：能立刻上手的实用工具。
+          <p className="apple-body-lg" data-reveal>
+            首页中央是一枚缓慢运转的精密法阵。往下滚动，它会退开，让真正的内容出现——不是仪表盘，不是按钮墙，只是你此刻需要的工具。
           </p>
         </div>
       </section>
 
-      {/* ===== S3 Featured tools ===== */}
-      <section id="tools" data-section="tools" className="home-section">
-        <div className="container-app">
-          <div className="home-section-head" data-reveal>
-            <div>
-              <p className="home-kicker">FEATURED</p>
-              <h2 className="home-h2">高频工具</h2>
-            </div>
-            <Link href="/tools/developer/" className="btn btn-ghost">
-              查看更多 →
-            </Link>
+      {/* 3 · Tools */}
+      <section id="tools" className="apple-section">
+        <div className="apple-wrap">
+          <div className="apple-section-label" data-reveal>
+            常用工具
           </div>
-          <div className="home-search" data-reveal>
-            <SearchBox tools={TOOLS} />
-          </div>
-          <div className="home-grid">
+          <h2 className="apple-headline" data-reveal>
+            打开就能用
+          </h2>
+          <div className="apple-tool-grid">
             {featured.map((t) => (
-              <Link
-                key={t.slug}
-                href={`/tools/${t.slug}/`}
-                className="home-card"
-                data-card
-              >
-                <div className="home-card-top">
-                  <span className="home-card-icon" aria-hidden>
-                    ◈
-                  </span>
-                  {t.status === "beta" && <span className="badge">Beta</span>}
-                </div>
+              <Link key={t.slug} href={`/tools/${t.slug}/`} className="apple-tool" data-card>
                 <h3>{t.name}</h3>
                 <p>{t.description}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== S4 Categories ===== */}
-      <section data-section="categories" className="home-section home-section-alt">
-        <div className="container-app">
-          <h2 className="home-h2" data-reveal>
-            按场景分类
-          </h2>
-          <div className="home-cat-grid">
-            {CATEGORIES.map((c, i) => (
-              <Link
-                key={c.id}
-                href={`/tools/${c.id}/`}
-                className="home-cat"
-                data-card
-              >
-                <span className="home-cat-code">
-                  {String(i + 1).padStart(2, "0")}
+                <span className="apple-tool-go" aria-hidden>
+                  →
                 </span>
-                <strong>{c.name}</strong>
-                <span>{c.description}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="apple-more" data-reveal>
+            <Link href="/tools/image/" className="apple-link">
+              查看图片工具
+            </Link>
+            <Link href="/tools/developer/" className="apple-link">
+              查看开发者工具
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 4 · Categories */}
+      <section className="apple-section apple-section-soft">
+        <div className="apple-wrap">
+          <div className="apple-section-label" data-reveal>
+            分类
+          </div>
+          <h2 className="apple-headline" data-reveal>
+            按场景进入
+          </h2>
+          <div className="apple-cat-list">
+            {CATEGORIES.map((c) => (
+              <Link key={c.id} href={`/tools/${c.id}/`} className="apple-cat-row" data-card>
+                <span className="apple-cat-name">{c.name}</span>
+                <span className="apple-cat-desc">{c.description}</span>
+                <span className="apple-cat-arrow" aria-hidden>
+                  →
+                </span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== S5 Features ===== */}
-      <section data-section="features" className="home-section">
-        <div className="container-app">
-          <h2 className="home-h2" data-reveal>
-            为什么是 ToolBox
+      {/* 5 · Close */}
+      <section className="apple-section">
+        <div className="apple-wrap apple-close">
+          <h2 className="apple-display" data-reveal>
+            免费。本地。可部署。
           </h2>
-          <div className="home-feature-grid">
-            {FEATURES.map((f) => (
-              <article key={f.title} className="home-feature" data-card>
-                <span className="home-feature-meta">{f.meta}</span>
-                <h3>{f.title}</h3>
-                <p>{f.body}</p>
-              </article>
-            ))}
+          <p className="apple-body-lg" data-reveal>
+            无需账号，无广告干扰工具区。静态站点，可托管到任何免费平台。
+          </p>
+          <div className="apple-hero-actions" data-reveal>
+            <Link href="/tools/json-formatter/" className="apple-btn apple-btn-fill">
+              格式化 JSON
+            </Link>
+            <Link href="/privacy/" className="apple-btn apple-btn-quiet">
+              了解隐私说明
+            </Link>
           </div>
-
-          <div className="home-cta" data-reveal>
-            <div>
-              <h3>准备好了吗？</h3>
-              <p>从图片压缩或 JSON 格式化开始，三十秒内完成第一件事。</p>
-            </div>
-            <div className="home-actions">
-              <Link href="/tools/image-compressor/" className="btn btn-primary">
-                压缩图片
-              </Link>
-              <Link href="/tools/json-formatter/" className="btn btn-secondary">
-                格式化 JSON
-              </Link>
-            </div>
-          </div>
-
-          <AdSlot variant="bottom" network="adsense" />
         </div>
       </section>
     </div>
