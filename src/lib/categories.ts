@@ -46,5 +46,5 @@ export const SITE = {
   tagline: "免费 · 隐私优先 · 本地处理",
   description:
     "免费在线工具箱。图片、音频、视频、PDF 与开发者工具，文件仅在浏览器本地处理，不上传服务器。",
-  url: "https://toolbox.example.com",
+  url: "https://toolbox-3ej.pages.dev",
 };
