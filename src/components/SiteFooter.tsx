@@ -3,21 +3,32 @@ import { SITE } from "@/lib/categories";
 
 export default function SiteFooter() {
   return (
-    <footer style={{ borderTop: "1px solid var(--border)", marginTop: 64, padding: "2rem 0 2.5rem" }}>
-      <div className="container-app" style={{ color: "var(--text-dim)", fontSize: ".875rem" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "space-between", marginBottom: 12 }}>
+    <footer className="site-footer">
+      <div className="container-app">
+        <div className="site-footer-grid">
           <div>
-            <strong style={{ color: "var(--text-muted)" }}>{SITE.name}</strong>
-            <div>{SITE.tagline}</div>
+            <div className="site-brand" style={{ marginBottom: 10 }}>
+              <span className="site-logo" aria-hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.6" />
+                </svg>
+              </span>
+              <span className="site-brand-name">{SITE.name}</span>
+            </div>
+            <p className="site-footer-tag">{SITE.tagline}</p>
           </div>
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <Link href="/privacy/">隐私说明</Link>
+          <div className="site-footer-links">
             <Link href="/tools/image/">图片工具</Link>
             <Link href="/tools/developer/">开发者</Link>
-            <Link href="/sitemap.xml">站点地图</Link>
+            <Link href="/tools/generator/">生成器</Link>
+            <Link href="/privacy/">隐私说明</Link>
           </div>
         </div>
-        <div>© {new Date().getFullYear()} {SITE.name} · 免费使用 · 文件不上传</div>
+        <div className="site-footer-bottom">
+          <span>© {new Date().getFullYear()} {SITE.name}</span>
+          <span>文件本地处理 · 不上传</span>
+        </div>
       </div>
     </footer>
   );
